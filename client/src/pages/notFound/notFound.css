@@ -7,3 +7,118 @@
     margin-top: 2rem;
     display: block;
 }
+
+
+.m-top-20px{
+    margin-top: 20px;
+}
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .bold-text{
+    font-weight: 700px;
+  }
+  
+  h2 {
+    
+    max-width: 700px;
+    padding: 20px;
+  }
+  
+  .date-filter {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .Filter{
+    margin-right: 100px;
+  }
+  .date-filter label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .margin-right-50{
+    margin-right: 50px;
+  }
+
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 50px 150px;
+    border: none;
+    cursor: pointer;
+    border: 2px solid #3498db; 
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color:#3498db;
+  }
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .orders-table th, .orders-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .orders-table th {
+    background-color: none;
+    color: white;
+  }
+  
+  .orders-table tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: none;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .btn:hover {
+    background-color: none;
+  }
+  
+  .total-money{
+    float: right; 
+    font-size: 20px; 
+    margin-bottom: 20px;
+  }
+
+  .pagination{
+   
+    margin-top: 20px;
+  }
+
+  .pagination-btn{
+    margin-right: 20px;
+  }
+
+  /* Add these styles to your CSS */
+.avatar-container {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 30px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  border-radius: 50%;
+  margin-right: 10px; /* Adjust the margin as needed */
+}
