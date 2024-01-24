@@ -1,183 +1,74 @@
 import React, { useState, useEffect } from 'react';
+import { getOrder } from "../../api/orderService";
+import ImageUploader from "../../components/ImageUploadCustom";
+import UserDefaultImage from "../../images/user_profile.png";
 import './notFound.css';
-
 
 const ManageOrders = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [orders, setOrders] = useState([
-    {
-		id: 1,
-		displayName: 'John Doe',
-		date: '2024-01-20',
-		orderId: 'ABC123',
-		serviceType: 'Service A',
-		startTime: '10:00 AM',
-		endTime: '12:00 PM',
-		paidMoney: 50.00,
-		avatar: 'path/to/avatar1.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  {
-		id: 2,
-		displayName: 'Jane Smith',
-		date: '2024-01-21',
-		orderId: 'XYZ789',
-		serviceType: 'Service B',
-		startTime: '2:00 PM',
-		endTime: '4:00 PM',
-		paidMoney: 75.50,
-		avatar: 'path/to/avatar2.jpg',
-	  },
-	  
-
-  ]);
-  
+  const [allOrders, setAllOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    document.title = 'Admin Page: Manage Orders';
-  }, []);
-
   const handleFilter = () => {
-    const filteredOrders = orders.filter(order => {
-      const orderDate = new Date(order.date);
-      const filterStartDate = startDate ? new Date(startDate) : null;
-      const filterEndDate = endDate ? new Date(endDate) : null;
+    const filterStartDate = startDate ? new Date(startDate) : null;
+    const filterEndDate = endDate ? new Date(endDate) : null;
 
-      if (filterStartDate && orderDate < filterStartDate) {
+    const filteredOrders = allOrders.filter(order => {
+      const orderTimestamp = order.date._seconds * 1000; // Convert to milliseconds
+
+      if (filterStartDate && orderTimestamp < filterStartDate.getTime()) {
         return false;
       }
 
-      if (filterEndDate && orderDate > filterEndDate) {
+      if (filterEndDate && orderTimestamp > filterEndDate.getTime()) {
         return false;
       }
 
       return true;
     });
 
-    setOrders(filteredOrders);
+    setFilteredOrders(filteredOrders);
     setCurrentPage(1);
   };
 
-  const totalMoney = orders.reduce((total, order) => total + parseFloat(order.paidMoney), 0);
+  const totalMoney = filteredOrders.reduce((total, order) => total + parseFloat(order.paid_money), 0);
 
-  const itemsPerPage = 5; // Adjust the number of items per page as needed
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const visiblePageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handlePageChange = page => {
     setCurrentPage(page);
   };
 
+  const fetchOrders = async () => {
+    try {
+      const { statusCode, ordersData } = await getOrder();
+      if (ordersData && statusCode === 200) {
+        setAllOrders(ordersData);
+        setFilteredOrders(ordersData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    document.title = 'Admin Page: Manage Orders';
+    fetchOrders();
+  }, []);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <section>
-		<h2>Manage Orders</h2>
+      <h2>Manage Orders</h2>
       <div className="container">
-       
-
-        <div className="date-filter ">
+        <div className="date-filter">
           <p className="Filter bold-text">Filter By:</p>
           <div className="margin-right-50">
             <label>From Date: </label>
@@ -200,9 +91,7 @@ const ManageOrders = () => {
 
         <table className="orders-table">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Display Name</th>
+            <tr><th>Display Name</th>
               <th>Date</th>
               <th>Order ID</th>
               <th>Service Type</th>
@@ -213,20 +102,21 @@ const ManageOrders = () => {
           </thead>
           <tbody>
             {currentItems.map(order => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
+              <tr key={order.orderId}>
                 <td>
-        <div className="avatar-container">
-          <img src={order.avatar} alt="Avatar" className="avatar" />
-          <span>{order.displayName}</span>
-        </div>
-      </td>
-                <td>{order.date}</td>
-				<td>{order.orderId}</td>
-                <td>{order.serviceType}</td>
-                <td>{order.startTime}</td>
-                <td>{order.endTime}</td>
-                <td>{order.paidMoney}</td>
+                  <div className="avatar-container">
+                    <div className="avatar-wrapper">
+                      <ImageUploader defaultImage={`${order.photoURL ? order.photoURL : UserDefaultImage}`} typeImage={"photo"} />
+                    </div>
+                    <span>{order.displayName}</span>
+                  </div>
+                </td>
+                <td>{new Date(order.date._seconds * 1000).toLocaleDateString()}</td>
+                <td>{order.orderId}</td>
+                <td>{order.service_type}</td>
+                <td>{new Date(order.start_time._seconds * 1000).toLocaleDateString()}</td>
+                <td>{new Date(order.end_time._seconds * 1000).toLocaleDateString()}</td>
+                <td>{order.paid_money}</td>
               </tr>
             ))}
           </tbody>
@@ -240,7 +130,15 @@ const ManageOrders = () => {
           >
             Previous
           </button>
-          <span className="pagination-current pagination-btn ">Page {currentPage}</span>
+          {visiblePageNumbers.map(pageNumber => (
+            <button
+              key={pageNumber}
+              className={`pagination-btn ${pageNumber === currentPage ? 'active' : ''}`}
+              onClick={() => handlePageChange(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          ))}
           <button
             className="pagination-btn"
             onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : totalPages)}

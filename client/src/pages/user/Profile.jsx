@@ -39,6 +39,7 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             const { statusCode, user } = await getProfile(id);
+            
             if (user && statusCode === 200) {
                 setProfile(user);
             }
